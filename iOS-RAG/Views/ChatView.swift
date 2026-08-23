@@ -218,6 +218,14 @@ struct ChatView: View {
                         Label("Tour", systemImage: "questionmark.circle")
                     }
                 }
+                
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        viewModel.showHistory = true
+                    } label: {
+                        Label("Verlauf", systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90")
+                    }
+                }
 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -226,6 +234,12 @@ struct ChatView: View {
                         Label("New Session", systemImage: "plus.bubble")
                     }
                 }
+            }
+            .sheet(isPresented: $viewModel.showHistory) {
+                ChatHistoryView(viewModel: viewModel)
+            }
+            .task {
+                await viewModel.loadAllSessions()
             }
             .task {
                 await settingsViewModel.reload()

@@ -103,7 +103,7 @@ actor GGUFLocalRunner: LocalModelRunner {
         if let existing = llm {
             instance = existing
         } else {
-            guard let created = LLM(from: modelURL, template: baseTemplate, maxTokenCount: 2048) else {
+            guard let created = LLM(from: modelURL, template: baseTemplate, maxTokenCount: 4096) else {
                 throw NSError(
                     domain: "GGUFLocalRunner",
                     code: 500,
@@ -116,46 +116,59 @@ actor GGUFLocalRunner: LocalModelRunner {
             instance = created
         }
 
-        let systemInstructions: String
-        if context.isEmpty {
-            systemInstructions = "You are a helpful AI assistant. Answer the user prompt accurately and concisely."
-        } else {
-            let contextContent = context.enumerated().map { index, text in
-                "[Passage \(index + 1)]:\n\(text)"
-            }.joined(separator: "\n\n---\n\n")
-            systemInstructions = """
-            You are a helpful knowledge assistant that answers questions based on document passages.
-
-            INSTRUCTIONS:
-            1. Read all the passages below carefully.
-            2. Answer the user's question using ONLY information from these passages.
-            3. If the answer spans multiple passages, combine the relevant information.
-            4. If the passages do not contain enough information to answer, say so clearly.
-            5. Do NOT copy entire passages verbatim. Summarize and answer in your own words.
-            6. Be concise and direct.
-
-            DOCUMENT PASSAGES:
-            \(contextContent)
-
-            Now answer the following question based on the passages above.
-            """
-        }
-
         let dynamicTemplate: Template
         let fullPrompt: String
-        switch modelID {
-        case "qwen2-0.5b-gguf":
-            dynamicTemplate = .chatML(systemInstructions)
-            fullPrompt = prompt
-        case "tinyllama-gguf":
-            dynamicTemplate = .llama(systemInstructions)
-            fullPrompt = prompt
-        case "gemma-4-e2b-gguf", "gemma-2-2b-gguf":
-            dynamicTemplate = .gemma
-            fullPrompt = "\(systemInstructions)\n\n\(prompt)"
-        default:
-            dynamicTemplate = .chatML(systemInstructions)
-            fullPrompt = prompt
+
+        if context.isEmpty {
+            // No RAG context — simple chat mode
+            let systemPrompt = "You are a helpful assistant. Answer concisely."
+            switch modelID {
+            case "qwen2-0.5b-gguf":
+                dynamicTemplate = .chatML(systemPrompt)
+                fullPrompt = prompt
+            case "tinyllama-gguf":
+                dynamicTemplate = .llama(systemPrompt)
+                fullPrompt = prompt
+            case "gemma-4-e2b-gguf", "gemma-2-2b-gguf":
+                dynamicTemplate = .gemma
+                fullPrompt = prompt
+            default:
+                dynamicTemplate = .chatML(systemPrompt)
+                fullPrompt = prompt
+            }
+        } else {
+            // RAG mode — keep everything as compact as possible for tiny models.
+            // Budget: ~1500 chars for context, leaving room for question + generation.
+            let maxContextChars = 1500
+            var contextParts: [String] = []
+            var usedChars = 0
+            for (i, passage) in context.enumerated() {
+                let trimmed = String(passage.prefix(500))
+                if usedChars + trimmed.count > maxContextChars { break }
+                contextParts.append("[\(i+1)] \(trimmed)")
+                usedChars += trimmed.count
+            }
+            let contextBlock = contextParts.joined(separator: "\n")
+
+            // Embed context directly into the user prompt for maximum compatibility
+            // with tiny models. Keep system prompt minimal.
+            let ragQuestion = "Context:\n\(contextBlock)\n\nBased on the context above, answer this question: \(prompt)"
+            let systemPrompt = "Answer using only the provided context."
+
+            switch modelID {
+            case "qwen2-0.5b-gguf":
+                dynamicTemplate = .chatML(systemPrompt)
+                fullPrompt = ragQuestion
+            case "tinyllama-gguf":
+                dynamicTemplate = .llama(systemPrompt)
+                fullPrompt = ragQuestion
+            case "gemma-4-e2b-gguf", "gemma-2-2b-gguf":
+                dynamicTemplate = .gemma
+                fullPrompt = ragQuestion
+            default:
+                dynamicTemplate = .chatML(systemPrompt)
+                fullPrompt = ragQuestion
+            }
         }
 
         let formattedPrompt = dynamicTemplate.preprocess(fullPrompt, [], .none)

@@ -22,7 +22,7 @@ actor RAGService {
 
         if useRAG {
             let queryEmbedding = await embeddingService.embed(text: question)
-            let results = try await vectorStore.search(queryEmbedding: queryEmbedding, k: 6)
+            let results = try await vectorStore.search(queryEmbedding: queryEmbedding, k: 2)
             context = results.map(\.text)
 
             if context.isEmpty {

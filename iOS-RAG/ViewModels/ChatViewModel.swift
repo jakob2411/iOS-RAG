@@ -8,6 +8,9 @@ final class ChatViewModel: ObservableObject {
     @Published var useRAG = true
     @Published var errorMessage: String?
 
+    @Published var sessions: [ChatSession] = []
+    @Published var showHistory = false
+
     private let ragService: RAGService
     private let sessionStore: SessionStore
     private var session = ChatSession()
@@ -17,12 +20,34 @@ final class ChatViewModel: ObservableObject {
         self.sessionStore = sessionStore
     }
 
-    func loadSession() async {
+    func loadAllSessions() async {
         do {
-            let savedSessions = try await sessionStore.loadSessions()
-            if let first = savedSessions.first {
-                session = first
-                messages = first.messages
+            sessions = try await sessionStore.loadSessions()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func loadSession() async {
+        await loadAllSessions()
+        if let first = sessions.first {
+            session = first
+            messages = first.messages
+        }
+    }
+
+    func selectSession(_ selectedSession: ChatSession) {
+        session = selectedSession
+        messages = selectedSession.messages
+        showHistory = false
+    }
+
+    func deleteSession(_ sessionToDelete: ChatSession) async {
+        do {
+            try await sessionStore.delete(sessionID: sessionToDelete.id)
+            await loadAllSessions()
+            if session.id == sessionToDelete.id {
+                startNewSession()
             }
         } catch {
             errorMessage = error.localizedDescription
@@ -34,6 +59,9 @@ final class ChatViewModel: ObservableObject {
         messages = []
         inputText = ""
         errorMessage = nil
+        Task {
+            await loadAllSessions()
+        }
     }
 
     func send() async {
@@ -61,6 +89,7 @@ final class ChatViewModel: ObservableObject {
                 session.title = String(text.prefix(40))
             }
             try await sessionStore.save(session: session)
+            await loadAllSessions()
         } catch {
             errorMessage = error.localizedDescription
             messages.append(ChatMessage(role: .assistant, text: "Failed: \(error.localizedDescription)"))

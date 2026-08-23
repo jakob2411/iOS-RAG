@@ -3,11 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8A1100012C1B000000000003 /* LLM in Frameworks */ = {isa = PBXBuildFile; productRef = 8A1100012C1B000000000002 /* LLM */; };
 		0F2F6558EF85C824B0D68F32 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 886FB45428EA72F5D9F77C31 /* Foundation.framework */; };
 		113920809DF2962B22D7476E /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13E41319415AB8E2169311F /* ChatViewModel.swift */; };
 		1E382C5B04FA8C60C7A59C95 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE176C3D91715FF125123EC3 /* ContentView.swift */; };
@@ -17,6 +16,8 @@
 		740471ACEF90B0DD94C2DC3E /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBBCDDDA59A155E7668B245A /* AppContainer.swift */; };
 		77E4B33AD608F7A473F92115 /* iOS_RAGApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C1B2B7E702BE0945F61FCA /* iOS_RAGApp.swift */; };
 		84FA0C0098AA0EC395A2B2E0 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CF692A3D2391D2397FCC31 /* SettingsViewModel.swift */; };
+		8A1100012C1B000000000003 /* LLM in Frameworks */ = {isa = PBXBuildFile; productRef = 8A1100012C1B000000000002 /* LLM */; };
+		8A1100012C1B000000000010 /* GuidedTourView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1100012C1B000000000011 /* GuidedTourView.swift */; };
 		90F28213771462842242707F /* LocalModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9482BD090C3E98E85CFA6B8 /* LocalModel.swift */; };
 		93AA83F73C72A146F1AE7025 /* ChatSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA2FE737C65C3A0BF242AFE /* ChatSession.swift */; };
 		A360C6A7280ACA870F7A2EEB /* VectorStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCB16DD2EBA12B58FA9F78C /* VectorStore.swift */; };
@@ -30,12 +31,11 @@
 		D84E8C46BDD291EBC5807250 /* DocumentIngestionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8943BEB0C3942263C901E3 /* DocumentIngestionService.swift */; };
 		EA10A8D7A9FC25FB1F391D5B /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DBC4F73C1BA3CEAEB4F040B /* ChatMessage.swift */; };
 		F394BD18DB27B79C9E195EA4 /* EmbeddingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6433D42511674132BF2FEF /* EmbeddingService.swift */; };
-		8A1100012C1B000000000010 /* GuidedTourView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1100012C1B000000000011 /* GuidedTourView.swift */; };
 		F65A163CD364EE49777B3173 /* IndexedChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D6F265280952649076A98B /* IndexedChunk.swift */; };
+		AA1100012C1B000000000020 /* ChatHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1100012C1B000000000021 /* ChatHistoryView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8A1100012C1B000000000011 /* GuidedTourView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GuidedTourView.swift; path = Views/GuidedTourView.swift; sourceTree = "<group>"; };
 		06BCA4EC81F44D377728D011 /* SessionStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SessionStore.swift; path = Services/SessionStore.swift; sourceTree = "<group>"; };
 		23C1B2B7E702BE0945F61FCA /* iOS_RAGApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = iOS_RAGApp.swift; sourceTree = "<group>"; };
 		48BC59C744ACF4B456FEEF23 /* ModelRunner.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ModelRunner.swift; path = Services/ModelRunner.swift; sourceTree = "<group>"; };
@@ -47,8 +47,9 @@
 		6F9C394231C24417243D0DC8 /* RAGService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RAGService.swift; path = Services/RAGService.swift; sourceTree = "<group>"; };
 		74D6F265280952649076A98B /* IndexedChunk.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IndexedChunk.swift; path = Models/IndexedChunk.swift; sourceTree = "<group>"; };
 		886FB45428EA72F5D9F77C31 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		8A1100012C1B000000000011 /* GuidedTourView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GuidedTourView.swift; path = Views/GuidedTourView.swift; sourceTree = "<group>"; };
 		8B062FECECF82353EB8D7C7C /* ModelDownloadService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ModelDownloadService.swift; path = Services/ModelDownloadService.swift; sourceTree = "<group>"; };
-		8C35974C82F8A358BA3713CA /* Contents.json */ = {isa = PBXFileReference; includeInIndex = 1; name = Contents.json; path = Assets.xcassets/Contents.json; sourceTree = "<group>"; };
+		8C35974C82F8A358BA3713CA /* Contents.json */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.json; name = Contents.json; path = Assets.xcassets/Contents.json; sourceTree = "<group>"; };
 		9DCB16DD2EBA12B58FA9F78C /* VectorStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = VectorStore.swift; path = Services/VectorStore.swift; sourceTree = "<group>"; };
 		B03E86E1A8F818AD4DBD85D2 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BE176C3D91715FF125123EC3 /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -61,6 +62,7 @@
 		F06956838DF4FEC3C5EE7212 /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = Views/SettingsView.swift; sourceTree = "<group>"; };
 		F7BC23315510964D4E0E408A /* iOS-RAG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS-RAG.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBBD1FB38EC19ADC8BB33561 /* IndexViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IndexViewModel.swift; path = ViewModels/IndexViewModel.swift; sourceTree = "<group>"; };
+		AA1100012C1B000000000021 /* ChatHistoryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ChatHistoryView.swift; path = Views/ChatHistoryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,9 +137,9 @@
 				62FA66484D11C11CB27811E8 /* IndexManagerView.swift */,
 				F06956838DF4FEC3C5EE7212 /* SettingsView.swift */,
 				8A1100012C1B000000000011 /* GuidedTourView.swift */,
+				AA1100012C1B000000000021 /* ChatHistoryView.swift */,
 				23C1B2B7E702BE0945F61FCA /* iOS_RAGApp.swift */,
 			);
-			name = "iOS-RAG";
 			path = "iOS-RAG";
 			sourceTree = "<group>";
 		};
@@ -182,11 +184,9 @@
 				Base,
 			);
 			mainGroup = 3E26ECB8EA5925E4B4FB9CE1;
-			minimizedProjectReferenceProxies = 0;
 			packageReferences = (
-				8A1100012C1B000000000001 /* XCRemoteSwiftPackageReference "LLM.swift" */,
+				8A1100012C1B000000000001 /* XCRemoteSwiftPackageReference "LLM" */,
 			);
-			preferredProjectObjectVersion = 100;
 			productRefGroup = 4EC19D9BCFB5D701A2192943 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -233,6 +233,7 @@
 				2901347B30DE289095DCD3F4 /* IndexManagerView.swift in Sources */,
 				C4ABFC28AE420F623D530A10 /* SettingsView.swift in Sources */,
 				8A1100012C1B000000000010 /* GuidedTourView.swift in Sources */,
+				AA1100012C1B000000000020 /* ChatHistoryView.swift in Sources */,
 				77E4B33AD608F7A473F92115 /* iOS_RAGApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -302,11 +303,14 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = URML9XE3SD;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "iOS-RAG/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lsqlite3",
@@ -388,11 +392,14 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = URML9XE3SD;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "iOS-RAG/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lsqlite3",
@@ -405,25 +412,6 @@
 			name = Debug;
 		};
 /* End XCBuildConfiguration section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		8A1100012C1B000000000001 /* XCRemoteSwiftPackageReference "LLM.swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/eastriverlee/LLM.swift";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		8A1100012C1B000000000002 /* LLM */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8A1100012C1B000000000001 /* XCRemoteSwiftPackageReference "LLM.swift" */;
-			productName = LLM;
-		};
-/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCConfigurationList section */
 		46975A7BB4044415E8EDD784 /* Build configuration list for PBXNativeTarget "iOS-RAG" */ = {
@@ -445,6 +433,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8A1100012C1B000000000001 /* XCRemoteSwiftPackageReference "LLM" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/eastriverlee/LLM.swift";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8A1100012C1B000000000002 /* LLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8A1100012C1B000000000001 /* XCRemoteSwiftPackageReference "LLM" */;
+			productName = LLM;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3A27525D6C9D6A5CC23C864B /* Project object */;
 }

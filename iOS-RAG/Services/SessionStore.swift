@@ -3,16 +3,8 @@ import Foundation
 actor SessionStore {
     private let fileManager = FileManager.default
     private let filename = "chat_sessions.json"
-    private let shouldPersistSessions: Bool = {
-        #if targetEnvironment(simulator)
-        return false
-        #else
-        return true
-        #endif
-    }()
 
     func loadSessions() throws -> [ChatSession] {
-        guard shouldPersistSessions else { return [] }
         let fileURL = try sessionsFileURL()
         guard fileManager.fileExists(atPath: fileURL.path) else { return [] }
         let data = try Data(contentsOf: fileURL)
@@ -20,13 +12,19 @@ actor SessionStore {
     }
 
     func save(session: ChatSession) throws {
-        guard shouldPersistSessions else { return }
         var sessions = try loadSessions()
         if let index = sessions.firstIndex(where: { $0.id == session.id }) {
             sessions[index] = session
         } else {
             sessions.insert(session, at: 0)
         }
+        let data = try JSONEncoder().encode(sessions)
+        try data.write(to: try sessionsFileURL(), options: [.atomic])
+    }
+
+    func delete(sessionID: UUID) throws {
+        var sessions = try loadSessions()
+        sessions.removeAll { $0.id == sessionID }
         let data = try JSONEncoder().encode(sessions)
         try data.write(to: try sessionsFileURL(), options: [.atomic])
     }
