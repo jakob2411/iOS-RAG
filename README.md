@@ -9,6 +9,8 @@ A native SwiftUI iOS application that runs a complete, 100% private, on-device *
 <p align="center">
   <img src="docs/screenshots/chat_screen.png" width="320" alt="Chat View with Model Selector and RAG" />
   &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/screenshots/knowledge_overview.png" width="320" alt="Knowledge & Document Management" />
+    &nbsp;&nbsp;&nbsp;&nbsp;
   <img src="docs/screenshots/models_screen.png" width="320" alt="Models and Embedding Configuration" />
 </p>
 
