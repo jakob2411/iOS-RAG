@@ -149,16 +149,45 @@ actor GGUFLocalRunner: LocalModelRunner {
         let formattedPrompt = dynamicTemplate.preprocess(fullPrompt, [], .none)
         let rawAnswer = await instance.getCompletion(from: formattedPrompt)
 
-        var cleanedAnswer = rawAnswer.trimmingCharacters(in: .whitespacesAndNewlines)
-        if let stopSeq = dynamicTemplate.stopSequence, cleanedAnswer.hasSuffix(stopSeq) {
-            cleanedAnswer = String(cleanedAnswer.dropLast(stopSeq.count)).trimmingCharacters(in: .whitespacesAndNewlines)
-        }
+        let cleanedAnswer = cleanOutput(rawAnswer, stopSequence: dynamicTemplate.stopSequence)
 
         if cleanedAnswer.isEmpty {
             return "I processed your question with the local model, but no text response was produced."
         }
 
         return cleanedAnswer
+    }
+
+    private func cleanOutput(_ text: String, stopSequence: String?) -> String {
+        var result = text
+
+        if let stopSeq = stopSequence, !stopSeq.isEmpty, let range = result.range(of: stopSeq) {
+            result = String(result[..<range.lowerBound])
+        }
+
+        let knownStopTokens = [
+            "<end_of_turn>",
+            "<end_of_turn",
+            "<start_of_turn>",
+            "<start_of_turn",
+            "<|im_end|>",
+            "<|im_start|>",
+            "<|eot_id|>",
+            "<|end_of_text|>",
+            "<|endoftext|>",
+            "</s>",
+            "<s>",
+            "[INST]",
+            "[/INST]"
+        ]
+
+        for token in knownStopTokens {
+            if let range = result.range(of: token) {
+                result = String(result[..<range.lowerBound])
+            }
+        }
+
+        return result.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
