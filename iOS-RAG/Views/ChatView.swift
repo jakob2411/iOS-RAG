@@ -25,7 +25,7 @@ struct ChatView: View {
                                         }
                                     } label: {
                                         HStack {
-                                            Text(model.displayName)
+                                            Text("\(model.displayName) (\(model.formattedSize))")
                                             if settingsViewModel.selectedModelID == model.id {
                                                 Image(systemName: "checkmark")
                                             }

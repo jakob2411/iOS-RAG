@@ -90,6 +90,21 @@ actor ModelDownloadService {
         let localURL: URL
         let fileSizeBytes: Int64
         var displayName: String { model.displayName }
+
+        var formattedSize: String {
+            let gb = Double(fileSizeBytes) / 1_000_000_000.0
+            if gb < 1.0 {
+                let mb = Double(fileSizeBytes) / 1_000_000.0
+                return String(format: "ca. %.2f GB (%.0f MB)", gb, mb)
+            } else {
+                return String(format: "ca. %.2f GB", gb)
+            }
+        }
+
+        var sizeInGB: String {
+            let gb = Double(fileSizeBytes) / 1_000_000_000.0
+            return String(format: "%.2f GB", gb)
+        }
     }
 
     private let fileManager = FileManager.default
@@ -101,7 +116,8 @@ actor ModelDownloadService {
             runtime: .ggml,
             remoteURL: URL(string: "https://huggingface.co/Qwen/Qwen2-0.5B-Instruct-GGUF/resolve/main/qwen2-0_5b-instruct-q4_k_m.gguf")!,
             checksumSHA256: nil,
-            filename: "qwen2-0.5b-q4_k_m.gguf"
+            filename: "qwen2-0.5b-q4_k_m.gguf",
+            estimatedSizeBytes: 397_858_848
         ),
         LocalModel(
             id: "tinyllama-gguf",
@@ -109,7 +125,8 @@ actor ModelDownloadService {
             runtime: .ggml,
             remoteURL: URL(string: "https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf")!,
             checksumSHA256: nil,
-            filename: "tinyllama-1.1b-chat-v1.0-q4_k_m.gguf"
+            filename: "tinyllama-1.1b-chat-v1.0-q4_k_m.gguf",
+            estimatedSizeBytes: 668_799_008
         ),
         LocalModel(
             id: "gemma-4-e2b-gguf",
@@ -117,7 +134,8 @@ actor ModelDownloadService {
             runtime: .ggml,
             remoteURL: URL(string: "https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/resolve/main/gemma-4-E2B-it-Q4_K_M.gguf")!,
             checksumSHA256: nil,
-            filename: "gemma-4-e2b-it-q4_k_m.gguf"
+            filename: "gemma-4-e2b-it-q4_k_m.gguf",
+            estimatedSizeBytes: 3_430_000_000
         )
     ]
 

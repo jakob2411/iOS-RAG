@@ -92,9 +92,9 @@ iOS-RAG/
 
 | Model | Architecture | Size | Format / Template | Source |
 | :--- | :--- | :--- | :--- | :--- |
-| **Qwen2 0.5B Instruct** | Qwen2 | ~395 MB | GGUF (Q4_K_M) / ChatML | Hugging Face (`Qwen`) |
-| **TinyLlama 1.1B Chat** | LLaMA | ~670 MB | GGUF (Q4_K_M) / LLaMA | Hugging Face (`TheBloke`) |
-| **Gemma 4 E2B Instruct** | Gemma 4 | ~3.2 GB | GGUF (Q4_K_M) / Gemma | Hugging Face (`unsloth`) |
+| **Qwen2 0.5B Instruct** | Qwen2 | ~0.40 GB (398 MB) | GGUF (Q4_K_M) / ChatML | Hugging Face (`Qwen`) |
+| **TinyLlama 1.1B Chat** | LLaMA | ~0.67 GB (669 MB) | GGUF (Q4_K_M) / LLaMA | Hugging Face (`TheBloke`) |
+| **Gemma 4 E2B Instruct** | Gemma 4 | ~3.43 GB | GGUF (Q4_K_M) / Gemma | Hugging Face (`unsloth`) |
 
 ---
 

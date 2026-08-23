@@ -33,7 +33,7 @@ struct GuidedTourView: View {
                             badge: "Wichtigster Schritt",
                             badgeColor: .orange,
                             title: "Modell herunterladen",
-                            description: "Bevor du den Chat nutzen kannst, musst du im Reiter **Models** ein lokales KI-Modell herunterladen (z. B. Qwen2 0.5B oder TinyLlama 1.1B). Ohne Modell ist keine lokale Textgenerierung möglich.",
+                            description: "Bevor du den Chat nutzen kannst, musst du im Reiter **Models** ein lokales KI-Modell herunterladen (z. B. Qwen2 0.5B [ca. 0,40 GB], TinyLlama 1.1B [ca. 0,67 GB] oder Gemma 4 E2B [ca. 3,43 GB]). Ohne Modell ist keine lokale Textgenerierung möglich.",
                             icon: "arrow.down.circle.fill",
                             actionTitle: "Jetzt zu den Modellen",
                             action: {

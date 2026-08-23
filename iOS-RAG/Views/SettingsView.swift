@@ -20,11 +20,21 @@ struct SettingsView: View {
                     ForEach(viewModel.catalog) { model in
                         VStack(alignment: .leading, spacing: 10) {
                             HStack {
-                                VStack(alignment: .leading) {
+                                VStack(alignment: .leading, spacing: 4) {
                                     Text(model.displayName)
-                                    Text(model.runtime.rawValue.uppercased())
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .font(.body.weight(.medium))
+                                    HStack(spacing: 8) {
+                                        Text(model.runtime.rawValue.uppercased())
+                                            .font(.caption2.weight(.semibold))
+                                            .padding(.horizontal, 6)
+                                            .padding(.vertical, 2)
+                                            .background(Color.secondary.opacity(0.15))
+                                            .clipShape(RoundedRectangle(cornerRadius: 4))
+
+                                        Label(model.formattedSize, systemImage: "internaldrive")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
                                 }
                                 Spacer()
                                 if viewModel.selectedModelID == model.id {
@@ -79,9 +89,10 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     } else {
                         ForEach(viewModel.installedModels, id: \.id) { model in
-                            VStack(alignment: .leading) {
+                            VStack(alignment: .leading, spacing: 4) {
                                 Text(model.displayName)
-                                Text(ByteCountFormatter.string(fromByteCount: model.fileSizeBytes, countStyle: .file))
+                                    .font(.body.weight(.medium))
+                                Label(model.formattedSize, systemImage: "internaldrive")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }

@@ -78,6 +78,7 @@ struct IndexManagerView: View {
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Knowledge")
+            .navigationBarTitleDisplayMode(.inline)
             .fileImporter(
                 isPresented: $showingFileImporter,
                 allowedContentTypes: [.text, .plainText, .pdf, .image, .data],
