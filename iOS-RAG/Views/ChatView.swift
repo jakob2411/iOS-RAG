@@ -157,6 +157,7 @@ struct ChatView: View {
                             .padding(.horizontal, 14)
                             .padding(.vertical, 14)
                         }
+                        .scrollDismissesKeyboard(.interactively)
                         .onChange(of: viewModel.messages.count) { _, _ in
                             guard let lastID = viewModel.messages.last?.id else { return }
                             withAnimation(.easeOut(duration: 0.2)) {
@@ -234,6 +235,17 @@ struct ChatView: View {
                         Label("New Session", systemImage: "plus.bubble")
                     }
                 }
+
+                ToolbarItem(placement: .keyboard) {
+                    HStack {
+                        Spacer()
+                        Button {
+                            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                        } label: {
+                            Image(systemName: "keyboard.chevron.compact.down")
+                        }
+                    }
+                }
             }
             .sheet(isPresented: $viewModel.showHistory) {
                 ChatHistoryView(viewModel: viewModel)
@@ -245,6 +257,9 @@ struct ChatView: View {
                 await settingsViewModel.reload()
             }
             .background(Color(.systemGroupedBackground))
+            .onTapGesture {
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            }
         }
     }
 
@@ -287,11 +302,25 @@ private struct MessageBubble: View {
         isUser ? .white : .primary
     }
 
+    private var renderedText: Text {
+        if isUser {
+            return Text(message.text)
+        }
+        // Render markdown for assistant/system messages
+        if let attributed = try? AttributedString(
+            markdown: message.text,
+            options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)
+        ) {
+            return Text(attributed)
+        }
+        return Text(message.text)
+    }
+
     var body: some View {
         HStack {
             if isUser { Spacer(minLength: 42) }
 
-            Text(message.text)
+            renderedText
                 .font(.body)
                 .foregroundStyle(textColor)
                 .textSelection(.enabled)

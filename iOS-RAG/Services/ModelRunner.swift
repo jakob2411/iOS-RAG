@@ -177,7 +177,14 @@ actor GGUFLocalRunner: LocalModelRunner {
         let cleanedAnswer = cleanOutput(rawAnswer, stopSequence: dynamicTemplate.stopSequence)
 
         if cleanedAnswer.isEmpty {
-            return "I processed your question with the local model, but no text response was produced."
+            // Show raw output for debugging — helps identify if the model produced
+            // output that got stripped by cleanup, or truly produced nothing.
+            let preview = rawAnswer.prefix(300)
+            if rawAnswer.isEmpty {
+                return "[Debug] Das Modell hat keinen Output erzeugt. Der Prompt war möglicherweise zu lang für das Kontextfenster. Versuche ein größeres Modell (z.B. Gemma 2B) oder kürze deine Dokumente."
+            } else {
+                return "[Debug] Raw model output was stripped by cleanup. Raw preview: \(preview)"
+            }
         }
 
         return cleanedAnswer
@@ -186,29 +193,39 @@ actor GGUFLocalRunner: LocalModelRunner {
     private func cleanOutput(_ text: String, stopSequence: String?) -> String {
         var result = text
 
-        if let stopSeq = stopSequence, !stopSeq.isEmpty, let range = result.range(of: stopSeq) {
-            result = String(result[..<range.lowerBound])
+        // Remove the stop sequence from the template if present
+        if let stopSeq = stopSequence, !stopSeq.isEmpty {
+            // Only remove the FIRST occurrence at or near the end
+            if let range = result.range(of: stopSeq) {
+                result = String(result[..<range.lowerBound])
+            }
         }
 
+        // Remove known stop/control tokens — but only exact tokens, not substrings.
+        // Use iterative removal to handle tokens that appear multiple times.
         let knownStopTokens = [
             "<end_of_turn>",
-            "<end_of_turn",
             "<start_of_turn>",
-            "<start_of_turn",
             "<|im_end|>",
             "<|im_start|>",
             "<|eot_id|>",
             "<|end_of_text|>",
             "<|endoftext|>",
             "</s>",
-            "<s>",
             "[INST]",
             "[/INST]"
         ]
 
         for token in knownStopTokens {
-            if let range = result.range(of: token) {
-                result = String(result[..<range.lowerBound])
+            // Remove all occurrences of the exact token
+            result = result.replacingOccurrences(of: token, with: "")
+        }
+
+        // Remove any "model" or "assistant" role markers that some models prepend
+        let roleMarkers = ["model\n", "assistant\n", "Assistant:\n", "Assistant: "]
+        for marker in roleMarkers {
+            if result.hasPrefix(marker) {
+                result = String(result.dropFirst(marker.count))
             }
         }
 
