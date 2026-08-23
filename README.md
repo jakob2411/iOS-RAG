@@ -1,3 +1,6 @@
+> [!CAUTION]
+> **The RAG pipeline is currently unstable.** On-device retrieval-augmented generation may produce empty or incorrect responses depending on the model and document size. Plain LLM chat works as expected. A fix is in progress.
+
 # iOS-RAG
 
 A native SwiftUI iOS application that runs a complete, 100% private, on-device **Retrieval-Augmented Generation (RAG)** pipeline and local LLM inference directly on your iPhone.
