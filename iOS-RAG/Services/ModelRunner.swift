@@ -120,12 +120,24 @@ actor GGUFLocalRunner: LocalModelRunner {
         if context.isEmpty {
             systemInstructions = "You are a helpful AI assistant. Answer the user prompt accurately and concisely."
         } else {
-            let contextContent = context.joined(separator: "\n\n---\n\n")
+            let contextContent = context.enumerated().map { index, text in
+                "[Passage \(index + 1)]:\n\(text)"
+            }.joined(separator: "\n\n---\n\n")
             systemInstructions = """
-            You are a helpful knowledge assistant. Answer the question using ONLY the provided document context. If the answer cannot be found in the context, clearly say that the documents do not provide this information.
+            You are a helpful knowledge assistant that answers questions based on document passages.
 
-            Document Context:
+            INSTRUCTIONS:
+            1. Read all the passages below carefully.
+            2. Answer the user's question using ONLY information from these passages.
+            3. If the answer spans multiple passages, combine the relevant information.
+            4. If the passages do not contain enough information to answer, say so clearly.
+            5. Do NOT copy entire passages verbatim. Summarize and answer in your own words.
+            6. Be concise and direct.
+
+            DOCUMENT PASSAGES:
             \(contextContent)
+
+            Now answer the following question based on the passages above.
             """
         }
 

@@ -55,27 +55,101 @@ actor DocumentIngestionService {
         try await vectorStore.upsert(document: document, chunks: chunks)
     }
 
-    private func buildChunks(documentID: UUID, text: String, maxChunkLength: Int = 900, overlap: Int = 180) async -> [IndexedChunk] {
+    private func buildChunks(documentID: UUID, text: String, maxChunkLength: Int = 800, overlap: Int = 150) async -> [IndexedChunk] {
         let clean = text.replacingOccurrences(of: "\r\n", with: "\n")
         guard !clean.isEmpty else { return [] }
 
-        var chunks: [String] = []
-        var start = clean.startIndex
+        // Split into paragraphs first, then combine into appropriately-sized chunks
+        let paragraphs = clean.components(separatedBy: "\n\n").filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
 
-        while start < clean.endIndex {
-            let end = clean.index(start, offsetBy: maxChunkLength, limitedBy: clean.endIndex) ?? clean.endIndex
-            chunks.append(String(clean[start..<end]))
-            guard end < clean.endIndex else { break }
-            let overlapStart = clean.index(end, offsetBy: -min(overlap, clean.distance(from: clean.startIndex, to: end)))
-            start = overlapStart
+        var chunks: [String] = []
+        var currentChunk = ""
+
+        for paragraph in paragraphs {
+            let trimmedParagraph = paragraph.trimmingCharacters(in: .whitespacesAndNewlines)
+
+            if trimmedParagraph.count > maxChunkLength {
+                // Paragraph itself is too long – split by sentences
+                if !currentChunk.isEmpty {
+                    chunks.append(currentChunk)
+                    currentChunk = ""
+                }
+                let sentences = splitIntoSentences(trimmedParagraph)
+                var sentenceChunk = ""
+                for sentence in sentences {
+                    if sentenceChunk.count + sentence.count + 1 > maxChunkLength {
+                        if !sentenceChunk.isEmpty {
+                            chunks.append(sentenceChunk)
+                        }
+                        sentenceChunk = sentence
+                    } else {
+                        sentenceChunk += (sentenceChunk.isEmpty ? "" : " ") + sentence
+                    }
+                }
+                if !sentenceChunk.isEmpty {
+                    chunks.append(sentenceChunk)
+                }
+            } else if currentChunk.count + trimmedParagraph.count + 2 > maxChunkLength {
+                // Adding this paragraph would exceed limit – start new chunk
+                if !currentChunk.isEmpty {
+                    chunks.append(currentChunk)
+                }
+                currentChunk = trimmedParagraph
+            } else {
+                currentChunk += (currentChunk.isEmpty ? "" : "\n\n") + trimmedParagraph
+            }
+        }
+        if !currentChunk.isEmpty {
+            chunks.append(currentChunk)
+        }
+
+        // If paragraph splitting produced nothing useful (e.g., no double newlines in text),
+        // fall back to character-based splitting
+        if chunks.isEmpty {
+            var start = clean.startIndex
+            while start < clean.endIndex {
+                let end = clean.index(start, offsetBy: maxChunkLength, limitedBy: clean.endIndex) ?? clean.endIndex
+                chunks.append(String(clean[start..<end]))
+                guard end < clean.endIndex else { break }
+                let overlapStart = clean.index(end, offsetBy: -min(overlap, clean.distance(from: clean.startIndex, to: end)))
+                start = overlapStart
+            }
+        }
+
+        // Add overlap between paragraph-based chunks for continuity
+        var overlappedChunks: [String] = []
+        for i in chunks.indices {
+            var chunk = chunks[i]
+            if i > 0 {
+                // Prepend the last `overlap` characters from the previous chunk
+                let prev = chunks[i - 1]
+                let overlapCount = min(overlap, prev.count)
+                let suffix = String(prev.suffix(overlapCount))
+                chunk = suffix + "\n" + chunk
+            }
+            overlappedChunks.append(chunk)
         }
 
         var indexed: [IndexedChunk] = []
-        for chunk in chunks where !chunk.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        for chunk in overlappedChunks where !chunk.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             let embedding = await embeddingService.embed(text: chunk)
             indexed.append(IndexedChunk(documentID: documentID, text: chunk, embedding: embedding))
         }
         return indexed
+    }
+
+    private func splitIntoSentences(_ text: String) -> [String] {
+        var sentences: [String] = []
+        text.enumerateSubstrings(in: text.startIndex..., options: [.bySentences, .localized]) { substring, _, _, _ in
+            if let s = substring?.trimmingCharacters(in: .whitespacesAndNewlines), !s.isEmpty {
+                sentences.append(s)
+            }
+        }
+        // Fallback if sentence detection found nothing
+        if sentences.isEmpty {
+            return [text]
+        }
+        return sentences
     }
 
     private func extractText(from url: URL) throws -> String {

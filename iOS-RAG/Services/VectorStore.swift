@@ -91,6 +91,7 @@ actor VectorStore {
         }
 
         var scored: [(chunk: IndexedChunk, score: Float)] = []
+        let queryDim = queryEmbedding.count
 
         while sqlite3_step(statement) == SQLITE_ROW {
             guard
@@ -108,8 +109,18 @@ actor VectorStore {
             let embJSON = String(cString: embC)
 
             guard let id, let doc, let embedding = decodeEmbedding(json: embJSON) else { continue }
+
+            // Skip chunks whose embedding dimension doesn't match the query
+            // (happens when the embedding model was changed after indexing)
+            guard embedding.count == queryDim else { continue }
+
+            let score = cosineSimilarity(queryEmbedding, embedding)
+
+            // Only include chunks with meaningful similarity
+            guard score > 0.05 else { continue }
+
             let chunk = IndexedChunk(id: id, documentID: doc, text: text, embedding: embedding)
-            scored.append((chunk, cosineSimilarity(queryEmbedding, embedding)))
+            scored.append((chunk, score))
         }
 
         return scored

@@ -22,7 +22,17 @@ actor RAGService {
 
         if useRAG {
             let queryEmbedding = await embeddingService.embed(text: question)
-            context = try await vectorStore.search(queryEmbedding: queryEmbedding, k: 4).map(\.text)
+            let results = try await vectorStore.search(queryEmbedding: queryEmbedding, k: 6)
+            context = results.map(\.text)
+
+            if context.isEmpty {
+                // No relevant chunks found – tell the user directly instead of
+                // letting the model hallucinate without context.
+                return RAGResponse(
+                    answer: "Es wurden keine relevanten Passagen in deinen indexierten Dokumenten gefunden. Stelle sicher, dass du Dokumente im Knowledge-Tab indexiert hast und dass das Embedding-Modell seit der Indexierung nicht geändert wurde.",
+                    citations: []
+                )
+            }
         } else {
             context = []
         }
@@ -31,3 +41,4 @@ actor RAGService {
         return RAGResponse(answer: answer, citations: context)
     }
 }
+
